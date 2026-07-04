@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10,000 Kettlebell Swing Challenge</title>
+<style>
+  :root {
+    --accent: #e8590c;
+    --accent-light: #ffe8d9;
+    --bg: #f4f5f7;
+    --card: #ffffff;
+    --text: #1f2328;
+    --muted: #6b7280;
+    --border: #e3e5e8;
+    --success: #2f9e44;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 16px;
+  }
+  .wrap {
+    max-width: 480px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  h1 {
+    font-size: 1.3rem;
+    margin: 0 0 2px 0;
+  }
+  .subtitle {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin: 0;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+  }
+  .today-line {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .total-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .total-num {
+    font-size: 1.8rem;
+    font-weight: 700;
+  }
+  .total-goal {
+    color: var(--muted);
+    font-size: 1rem;
+  }
+  .progress-track {
+    width: 100%;
+    height: 12px;
+    background: #eee;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), #ff922b);
+    border-radius: 999px;
+    transition: width 0.3s ease;
+  }
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+  .section-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+  }
+  .btn-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+  }
+  .swing-btn {
+    background: var(--accent-light);
+    color: var(--accent);
+    border: none;
+    border-radius: 10px;
+    padding: 10px 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.08s ease, background 0.15s ease;
+  }
+  .swing-btn:active {
+    transform: scale(0.94);
+    background: var(--accent);
+    color: #fff;
+  }
+  .today-log {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+    min-height: 24px;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #eef1f4;
+    border-radius: 999px;
+    padding: 4px 6px 4px 10px;
+    font-size: 0.8rem;
+  }
+  .chip button {
+    border: none;
+    background: #d7dbe0;
+    color: #333;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+    padding: 0;
+    font-size: 0.7rem;
+    cursor: pointer;
+  }
+  .empty-note {
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+  .daily-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .daily-label {
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+  .daily-num {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .finish-btn {
+    width: 100%;
+    margin-top: 10px;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+  }
+  .finish-btn:disabled {
+    background: #e3e5e8;
+    color: var(--muted);
+    cursor: not-allowed;
+  }
+  .cal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .cal-header button {
+    border: 1px solid var(--border);
+    background: #fff;
+    border-radius: 8px;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  .cal-header .cal-month-label {
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    text-align: center;
+  }
+  .cal-dow {
+    font-size: 0.7rem;
+    color: var(--muted);
+    padding-bottom: 4px;
+  }
+  .cal-day {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    cursor: default;
+    color: var(--text);
+  }
+  .cal-day.blank { visibility: hidden; }
+  .cal-day.has-swings {
+    background: var(--accent-light);
+    color: var(--accent);
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .cal-day.is-today {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+  }
+  #dayInfo {
+    margin-top: 10px;
+    font-size: 0.82rem;
+    color: var(--muted);
+    min-height: 18px;
+  }
+  details {
+    font-size: 0.85rem;
+  }
+  summary {
+    cursor: pointer;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .cycle-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.82rem;
+  }
+  .cycle-item:last-child { border-bottom: none; }
+  .reset-btn {
+    width: 100%;
+    margin-top: 12px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: #fff;
+    color: var(--text);
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.85rem;
+  }
+  .reset-btn:hover { background: #f2f2f2; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div>
+    <h1>10,000 Kettlebell Swing Challenge</h1>
+    <p class="subtitle">Dan John's swing challenge tracker</p>
+  </div>
+
+  <div class="card">
+    <div class="today-line" id="todayLine"></div>
+
+    <div class="total-row">
+      <span class="total-num" id="totalNum">0</span>
+      <span class="total-goal">/ 10,000</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <div class="progress-meta">
+      <span id="progressPct">0%</span>
+      <span id="progressRemaining">10,000 to go</span>
+    </div>
+    <div class="daily-row">
+      <span class="daily-label">Today's checked-off count</span>
+      <span class="daily-num" id="dailyNum">0</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="section-title">Check off today's sets</p>
+    <div class="btn-grid" id="btnGrid"></div>
+    <div class="today-log" id="todayLog"></div>
+    <button class="finish-btn" id="finishDayBtn" disabled>Done for the Day</button>
+  </div>
+
+  <div class="card">
+    <div class="cal-header">
+      <button id="prevMonth">&#8592;</button>
+      <span class="cal-month-label" id="monthLabel"></span>
+      <button id="nextMonth">&#8594;</button>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+    <div id="dayInfo"></div>
+  </div>
+
+  <div class="card">
+    <details>
+      <summary>Past challenges</summary>
+      <div id="pastCycles"><p class="empty-note">No completed challenges yet.</p></div>
+    </details>
+    <button class="reset-btn" id="startNewBtn">Start New Challenge</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  const STORAGE_KEY = 'kettlebellSwingTracker';
+  const GOAL = 10000;
+  const INCREMENTS = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
+  const DOW_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+  let state = loadState();
+  let viewMonth = new Date().getMonth();
+  let viewYear = new Date().getFullYear();
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed.entries && parsed.cycles) {
+          if (!Array.isArray(parsed.pending)) parsed.pending = [];
+          return parsed;
+        }
+      }
+    } catch (e) {
+      console.warn('Could not read saved data, starting fresh.', e);
+    }
+    return { entries: {}, cycles: [{ startTs: Date.now(), endTs: null }], pending: [] };
+  }
+
+  function saveState() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) {
+      console.warn('Could not save data.', e);
+    }
+  }
+
+  function dateKey(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
+  function getCurrentCycle() {
+    return state.cycles[state.cycles.length - 1];
+  }
+
+  function dayTotal(key) {
+    const list = state.entries[key];
+    if (!list || !list.length) return 0;
+    return list.reduce((sum, e) => sum + e.value, 0);
+  }
+
+  function currentCycleTotal() {
+    const cycle = getCurrentCycle();
+    let total = 0;
+    for (const key in state.entries) {
+      for (const e of state.entries[key]) {
+        if (e.ts >= cycle.startTs && (cycle.endTs === null || e.ts < cycle.endTs)) {
+          total += e.value;
+        }
+      }
+    }
+    return total;
+  }
+
+  function cycleTotal(cycle) {
+    let total = 0;
+    for (const key in state.entries) {
+      for (const e of state.entries[key]) {
+        if (e.ts >= cycle.startTs && (cycle.endTs === null || e.ts < cycle.endTs)) {
+          total += e.value;
+        }
+      }
+    }
+    return total;
+  }
+
+  function addPending(value) {
+    state.pending.push({ value });
+    saveState();
+    renderAll();
+  }
+
+  function removePending(index) {
+    state.pending.splice(index, 1);
+    saveState();
+    renderAll();
+  }
+
+  // Commits any checked-off pending sets into today's entries (used for the
+  // running total/calendar) and clears the checklist. Returns the sum committed.
+  function commitPending() {
+    if (state.pending.length === 0) return 0;
+    const now = new Date();
+    const key = dateKey(now);
+    if (!state.entries[key]) state.entries[key] = [];
+    let sum = 0;
+    state.pending.forEach(p => {
+      state.entries[key].push({ value: p.value, ts: now.getTime() });
+      sum += p.value;
+    });
+    state.pending = [];
+    return sum;
+  }
+
+  function finishDay() {
+    if (state.pending.length === 0) return;
+    const total = state.pending.reduce((sum, p) => sum + p.value, 0);
+    const confirmed = confirm(`Log ${total} swings for today and clear the checklist?`);
+    if (!confirmed) return;
+    commitPending();
+    saveState();
+    renderAll();
+  }
+
+  function startNewChallenge() {
+    const confirmed = confirm('Start a new challenge? This will archive your current progress and reset the counter to 0.');
+    if (!confirmed) return;
+    commitPending();
+    const now = Date.now();
+    getCurrentCycle().endTs = now;
+    state.cycles.push({ startTs: now, endTs: null });
+    saveState();
+    renderAll();
+  }
+
+  function renderHeader() {
+    const now = new Date();
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('todayLine').textContent = now.toLocaleDateString(undefined, options);
+  }
+
+  function renderProgress() {
+    const total = currentCycleTotal();
+    const pct = Math.min(100, (total / GOAL) * 100);
+    document.getElementById('totalNum').textContent = total.toLocaleString();
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressPct').textContent = Math.floor(pct) + '%';
+    const remaining = GOAL - total;
+    document.getElementById('progressRemaining').textContent =
+      remaining > 0 ? `${remaining.toLocaleString()} to go` : `Goal reached! +${(total - GOAL).toLocaleString()} over`;
+  }
+
+  function renderButtons() {
+    const grid = document.getElementById('btnGrid');
+    grid.innerHTML = '';
+    INCREMENTS.forEach(val => {
+      const btn = document.createElement('button');
+      btn.className = 'swing-btn';
+      btn.textContent = val;
+      btn.addEventListener('click', () => addPending(val));
+      grid.appendChild(btn);
+    });
+  }
+
+  function renderChecklist() {
+    const log = document.getElementById('todayLog');
+    const finishBtn = document.getElementById('finishDayBtn');
+    log.innerHTML = '';
+
+    if (state.pending.length === 0) {
+      const note = document.createElement('span');
+      note.className = 'empty-note';
+      note.textContent = 'No sets checked off yet.';
+      log.appendChild(note);
+      finishBtn.disabled = true;
+      return;
+    }
+
+    state.pending.forEach((entry, idx) => {
+      const chip = document.createElement('span');
+      chip.className = 'chip';
+      const label = document.createElement('span');
+      label.textContent = `✓ ${entry.value}`;
+      const removeBtn = document.createElement('button');
+      removeBtn.textContent = '×';
+      removeBtn.title = 'Uncheck this set';
+      removeBtn.addEventListener('click', () => removePending(idx));
+      chip.appendChild(label);
+      chip.appendChild(removeBtn);
+      log.appendChild(chip);
+    });
+
+    finishBtn.disabled = false;
+  }
+
+  function renderDailyCount() {
+    const total = state.pending.reduce((sum, p) => sum + p.value, 0);
+    document.getElementById('dailyNum').textContent = total.toLocaleString();
+  }
+
+  function renderCalendar() {
+    const label = document.getElementById('monthLabel');
+    const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    label.textContent = `${monthNames[viewMonth]} ${viewYear}`;
+
+    const grid = document.getElementById('calGrid');
+    grid.innerHTML = '';
+    DOW_LABELS.forEach(d => {
+      const el = document.createElement('div');
+      el.className = 'cal-dow';
+      el.textContent = d;
+      grid.appendChild(el);
+    });
+
+    const firstDay = new Date(viewYear, viewMonth, 1);
+    const startOffset = firstDay.getDay();
+    const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+    const todayKey = dateKey(new Date());
+
+    for (let i = 0; i < startOffset; i++) {
+      const blank = document.createElement('div');
+      blank.className = 'cal-day blank';
+      grid.appendChild(blank);
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const cellDate = new Date(viewYear, viewMonth, day);
+      const key = dateKey(cellDate);
+      const total = dayTotal(key);
+      const cell = document.createElement('div');
+      cell.className = 'cal-day';
+      if (total > 0) cell.classList.add('has-swings');
+      if (key === todayKey) cell.classList.add('is-today');
+      cell.textContent = day;
+      if (total > 0) {
+        cell.addEventListener('click', () => {
+          document.getElementById('dayInfo').textContent =
+            `${cellDate.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}: ${total} swings`;
+        });
+      }
+      grid.appendChild(cell);
+    }
+  }
+
+  function renderPastCycles() {
+    const container = document.getElementById('pastCycles');
+    const archived = state.cycles.filter(c => c.endTs !== null);
+    if (archived.length === 0) {
+      container.innerHTML = '<p class="empty-note">No completed challenges yet.</p>';
+      return;
+    }
+    container.innerHTML = '';
+    archived.slice().reverse().forEach(cycle => {
+      const total = cycleTotal(cycle);
+      const start = new Date(cycle.startTs).toLocaleDateString();
+      const end = new Date(cycle.endTs).toLocaleDateString();
+      const row = document.createElement('div');
+      row.className = 'cycle-item';
+      row.innerHTML = `<span>${start} &ndash; ${end}</span><span>${total.toLocaleString()} swings</span>`;
+      container.appendChild(row);
+    });
+  }
+
+  function renderAll() {
+    renderHeader();
+    renderProgress();
+    renderDailyCount();
+    renderChecklist();
+    renderCalendar();
+    renderPastCycles();
+  }
+
+  document.getElementById('prevMonth').addEventListener('click', () => {
+    viewMonth--;
+    if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+    renderCalendar();
+  });
+  document.getElementById('nextMonth').addEventListener('click', () => {
+    viewMonth++;
+    if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+    renderCalendar();
+  });
+  document.getElementById('startNewBtn').addEventListener('click', startNewChallenge);
+  document.getElementById('finishDayBtn').addEventListener('click', finishDay);
+
+  renderButtons();
+  renderAll();
+})();
+</script>
+</body>
+</html>
