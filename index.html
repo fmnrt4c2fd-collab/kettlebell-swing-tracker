@@ -265,15 +265,195 @@
     font-size: 0.85rem;
   }
   .reset-btn:hover { background: #f2f2f2; }
+  .tab-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 10px 0;
+    border: 1px solid var(--border);
+    background: #fff;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .tab-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .tab-panel { display: none; flex-direction: column; gap: 16px; }
+  .tab-panel.active { display: flex; }
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 6px 0;
+  }
+  .stat-label {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .stat-num {
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+  .stat-sub {
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--muted);
+  }
+  .tgu-row {
+    display: flex;
+    gap: 12px;
+  }
+  .tgu-row + .tgu-row {
+    margin-top: 12px;
+  }
+  .tgu-side {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 12px;
+    background: #f9fafb;
+    border-radius: 10px;
+  }
+  .tgu-side-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  .tgu-side-count {
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .tgu-btns {
+    display: flex;
+    gap: 6px;
+    margin-top: 4px;
+  }
+  .tgu-btn {
+    background: var(--accent-light);
+    color: var(--accent);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .tgu-btn:active {
+    background: var(--accent);
+    color: #fff;
+  }
+  .tgu-minus {
+    background: #e3e5e8;
+    color: var(--text);
+    border: none;
+    border-radius: 8px;
+    width: 32px;
+    cursor: pointer;
+    font-weight: 700;
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
   <div>
-    <h1>10,000 Kettlebell Swing Challenge</h1>
-    <p class="subtitle">Dan John's swing challenge tracker</p>
+    <h1>Kettlebell Tracker</h1>
+    <p class="subtitle">Simple &amp; Sinister and the 10,000 Swing Challenge</p>
   </div>
 
+  <div class="tab-bar">
+    <button class="tab-btn active" data-tab="ss">Simple &amp; Sinister</button>
+    <button class="tab-btn" data-tab="challenge">10,000 Challenge</button>
+  </div>
+
+  <div id="tab-ss" class="tab-panel active">
+    <div class="card">
+      <p class="section-title">Today</p>
+      <div class="stat-row">
+        <span class="stat-label">Swings today</span>
+        <span class="stat-num" id="ssTodaySwings">0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">TGU sets today</span>
+        <span class="stat-num" id="ssTodayTgu">0</span>
+      </div>
+      <button class="reset-btn" id="ssResetTodayBtn">Reset Today's S&amp;S Data</button>
+    </div>
+
+    <div class="card">
+      <p class="section-title">Swings</p>
+      <div class="tgu-row">
+        <div class="tgu-side">
+          <span class="tgu-side-label">Left (1H)</span>
+          <span class="tgu-side-count" id="ssSwingLeftCount">0 sets (0 reps)</span>
+          <div class="tgu-btns">
+            <button class="tgu-btn" id="ssSwingLeftAdd">+10</button>
+            <button class="tgu-minus" id="ssSwingLeftMinus">&minus;</button>
+          </div>
+        </div>
+        <div class="tgu-side">
+          <span class="tgu-side-label">Right (1H)</span>
+          <span class="tgu-side-count" id="ssSwingRightCount">0 sets (0 reps)</span>
+          <div class="tgu-btns">
+            <button class="tgu-btn" id="ssSwingRightAdd">+10</button>
+            <button class="tgu-minus" id="ssSwingRightMinus">&minus;</button>
+          </div>
+        </div>
+      </div>
+      <div class="tgu-row">
+        <div class="tgu-side">
+          <span class="tgu-side-label">Two-Handed</span>
+          <span class="tgu-side-count" id="ssSwing2HCount">0 sets (0 reps)</span>
+          <div class="tgu-btns">
+            <button class="tgu-btn" id="ssSwing2HAdd">+10</button>
+            <button class="tgu-minus" id="ssSwing2HMinus">&minus;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="section-title">Turkish Get-Up</p>
+      <div class="tgu-row">
+        <div class="tgu-side">
+          <span class="tgu-side-label">Left</span>
+          <span class="tgu-side-count" id="ssTguLeftCount">0 sets (0 reps)</span>
+          <div class="tgu-btns">
+            <button class="tgu-btn" id="ssTguLeftAdd">+5</button>
+            <button class="tgu-minus" id="ssTguLeftMinus">&minus;</button>
+          </div>
+        </div>
+        <div class="tgu-side">
+          <span class="tgu-side-label">Right</span>
+          <span class="tgu-side-count" id="ssTguRightCount">0 sets (0 reps)</span>
+          <div class="tgu-btns">
+            <button class="tgu-btn" id="ssTguRightAdd">+5</button>
+            <button class="tgu-minus" id="ssTguRightMinus">&minus;</button>
+          </div>
+        </div>
+      </div>
+      <button class="finish-btn" id="ssFinishDayBtn" disabled>Done for the Day</button>
+    </div>
+
+    <div class="card">
+      <div class="cal-header">
+        <button id="ssPrevMonth">&#8592;</button>
+        <span class="cal-month-label" id="ssMonthLabel"></span>
+        <button id="ssNextMonth">&#8594;</button>
+      </div>
+      <div class="cal-grid" id="ssCalGrid"></div>
+      <div id="ssDayInfo"></div>
+    </div>
+  </div>
+
+  <div id="tab-challenge" class="tab-panel">
   <div class="card">
     <div class="today-line" id="todayLine"></div>
 
@@ -318,11 +498,13 @@
     </details>
     <button class="reset-btn" id="startNewBtn">Start New Challenge</button>
   </div>
+  </div>
 </div>
 
 <script>
 (function () {
   const STORAGE_KEY = 'kettlebellSwingTracker';
+  const TAB_KEY = 'kettlebellActiveTab';
   const GOAL = 10000;
   const INCREMENTS = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
   const DOW_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -330,6 +512,12 @@
   let state = loadState();
   let viewMonth = new Date().getMonth();
   let viewYear = new Date().getFullYear();
+  let ssViewMonth = new Date().getMonth();
+  let ssViewYear = new Date().getFullYear();
+
+  function defaultSSState() {
+    return { swingEntries: {}, tguEntries: {}, swingPending: [], tguPending: [] };
+  }
 
   function loadState() {
     try {
@@ -338,13 +526,18 @@
         const parsed = JSON.parse(raw);
         if (parsed.entries && parsed.cycles) {
           if (!Array.isArray(parsed.pending)) parsed.pending = [];
+          if (!parsed.ss || typeof parsed.ss !== 'object') parsed.ss = defaultSSState();
+          if (!parsed.ss.swingEntries) parsed.ss.swingEntries = {};
+          if (!parsed.ss.tguEntries) parsed.ss.tguEntries = {};
+          if (!Array.isArray(parsed.ss.swingPending)) parsed.ss.swingPending = [];
+          if (!Array.isArray(parsed.ss.tguPending)) parsed.ss.tguPending = [];
           return parsed;
         }
       }
     } catch (e) {
       console.warn('Could not read saved data, starting fresh.', e);
     }
-    return { entries: {}, cycles: [{ startTs: Date.now(), endTs: null }], pending: [] };
+    return { entries: {}, cycles: [{ startTs: Date.now(), endTs: null }], pending: [], ss: defaultSSState() };
   }
 
   function saveState() {
@@ -446,6 +639,109 @@
     renderAll();
   }
 
+  // --- Simple & Sinister ---
+  // Every logged swing set (left, right, or two-handed) is fixed at 10 reps.
+
+  function ssSwingDayCounts(key) {
+    const list = state.ss.swingEntries[key];
+    const counts = { L: 0, R: 0, '2H': 0 };
+    if (!list || !list.length) return counts;
+    list.forEach(e => counts[e.side]++);
+    return counts;
+  }
+
+  function ssDayTotal(key) {
+    const c = ssSwingDayCounts(key);
+    return (c.L + c.R + c['2H']) * 10;
+  }
+
+  function ssTguDayCount(key) {
+    const list = state.ss.tguEntries[key];
+    const counts = { left: 0, right: 0 };
+    if (!list || !list.length) return counts;
+    list.forEach(e => counts[e.side]++);
+    return counts;
+  }
+
+  function ssAddSwingPending(side) {
+    state.ss.swingPending.push({ side });
+    saveState();
+    renderAll();
+  }
+
+  function ssRemoveLastSwing(side) {
+    for (let i = state.ss.swingPending.length - 1; i >= 0; i--) {
+      if (state.ss.swingPending[i].side === side) {
+        state.ss.swingPending.splice(i, 1);
+        break;
+      }
+    }
+    saveState();
+    renderAll();
+  }
+
+  function ssAddTguPending(side) {
+    state.ss.tguPending.push({ side });
+    saveState();
+    renderAll();
+  }
+
+  function ssRemoveLastTgu(side) {
+    for (let i = state.ss.tguPending.length - 1; i >= 0; i--) {
+      if (state.ss.tguPending[i].side === side) {
+        state.ss.tguPending.splice(i, 1);
+        break;
+      }
+    }
+    saveState();
+    renderAll();
+  }
+
+  function ssCommitPending() {
+    const now = new Date();
+    const key = dateKey(now);
+    if (state.ss.swingPending.length) {
+      if (!state.ss.swingEntries[key]) state.ss.swingEntries[key] = [];
+      state.ss.swingPending.forEach(p => {
+        state.ss.swingEntries[key].push({ side: p.side, ts: now.getTime() });
+      });
+      state.ss.swingPending = [];
+    }
+    if (state.ss.tguPending.length) {
+      if (!state.ss.tguEntries[key]) state.ss.tguEntries[key] = [];
+      state.ss.tguPending.forEach(p => {
+        state.ss.tguEntries[key].push({ side: p.side, ts: now.getTime() });
+      });
+      state.ss.tguPending = [];
+    }
+  }
+
+  function ssFinishDay() {
+    const swingTotal = state.ss.swingPending.length * 10;
+    const tguCount = state.ss.tguPending.length;
+    if (swingTotal === 0 && tguCount === 0) return;
+    const confirmed = confirm(`Log ${swingTotal} swings and ${tguCount} TGU set${tguCount === 1 ? '' : 's'} (${tguCount * 5} reps) for today?`);
+    if (!confirmed) return;
+    ssCommitPending();
+    saveState();
+    renderAll();
+  }
+
+  function ssResetToday() {
+    const todayKey = dateKey(new Date());
+    const hasData = !!state.ss.swingEntries[todayKey] || !!state.ss.tguEntries[todayKey] ||
+      state.ss.swingPending.length > 0 || state.ss.tguPending.length > 0;
+    if (!hasData) return;
+    const confirmed = confirm("Clear all of today's Simple & Sinister swings and TGU sets (checked-off and already logged)? This cannot be undone.");
+    if (!confirmed) return;
+    delete state.ss.swingEntries[todayKey];
+    delete state.ss.tguEntries[todayKey];
+    state.ss.swingPending = [];
+    state.ss.tguPending = [];
+    saveState();
+    renderAll();
+  }
+
   function renderHeader() {
     const now = new Date();
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -473,6 +769,45 @@
       btn.addEventListener('click', () => addPending(val));
       grid.appendChild(btn);
     });
+  }
+
+  function renderSSStats() {
+    const todayKey = dateKey(new Date());
+    const committedSwings = ssDayTotal(todayKey);
+    const pendingSwings = state.ss.swingPending.length * 10;
+    document.getElementById('ssTodaySwings').textContent = (committedSwings + pendingSwings).toLocaleString();
+
+    const tgu = ssTguDayCount(todayKey);
+    const committedTgu = tgu.left + tgu.right;
+    const pendingTgu = state.ss.tguPending.length;
+    document.getElementById('ssTodayTgu').textContent = (committedTgu + pendingTgu).toLocaleString();
+  }
+
+  function renderSSSwings() {
+    const counts = { L: 0, R: 0, '2H': 0 };
+    state.ss.swingPending.forEach(p => counts[p.side]++);
+    document.getElementById('ssSwingLeftCount').textContent =
+      `${counts.L} set${counts.L === 1 ? '' : 's'} (${counts.L * 10} reps)`;
+    document.getElementById('ssSwingRightCount').textContent =
+      `${counts.R} set${counts.R === 1 ? '' : 's'} (${counts.R * 10} reps)`;
+    document.getElementById('ssSwing2HCount').textContent =
+      `${counts['2H']} set${counts['2H'] === 1 ? '' : 's'} (${counts['2H'] * 10} reps)`;
+    updateSSFinishBtn();
+  }
+
+  function renderSSTgu() {
+    const counts = { left: 0, right: 0 };
+    state.ss.tguPending.forEach(p => counts[p.side]++);
+    document.getElementById('ssTguLeftCount').textContent =
+      `${counts.left} set${counts.left === 1 ? '' : 's'} (${counts.left * 5} reps)`;
+    document.getElementById('ssTguRightCount').textContent =
+      `${counts.right} set${counts.right === 1 ? '' : 's'} (${counts.right * 5} reps)`;
+    updateSSFinishBtn();
+  }
+
+  function updateSSFinishBtn() {
+    const btn = document.getElementById('ssFinishDayBtn');
+    btn.disabled = state.ss.swingPending.length === 0 && state.ss.tguPending.length === 0;
   }
 
   function renderChecklist() {
@@ -511,18 +846,18 @@
     document.getElementById('dailyNum').textContent = total.toLocaleString();
   }
 
-  function renderCalendar() {
-    const label = document.getElementById('monthLabel');
-    const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-    label.textContent = `${monthNames[viewMonth]} ${viewYear}`;
+  const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
-    const grid = document.getElementById('calGrid');
-    grid.innerHTML = '';
+  function buildCalendarGrid(opts) {
+    const { gridEl, monthLabelEl, viewMonth, viewYear, dayInfoEl, dayTotalFn, formatDayInfo } = opts;
+    monthLabelEl.textContent = `${MONTH_NAMES[viewMonth]} ${viewYear}`;
+
+    gridEl.innerHTML = '';
     DOW_LABELS.forEach(d => {
       const el = document.createElement('div');
       el.className = 'cal-dow';
       el.textContent = d;
-      grid.appendChild(el);
+      gridEl.appendChild(el);
     });
 
     const firstDay = new Date(viewYear, viewMonth, 1);
@@ -533,13 +868,13 @@
     for (let i = 0; i < startOffset; i++) {
       const blank = document.createElement('div');
       blank.className = 'cal-day blank';
-      grid.appendChild(blank);
+      gridEl.appendChild(blank);
     }
 
     for (let day = 1; day <= daysInMonth; day++) {
       const cellDate = new Date(viewYear, viewMonth, day);
       const key = dateKey(cellDate);
-      const total = dayTotal(key);
+      const total = dayTotalFn(key);
       const cell = document.createElement('div');
       cell.className = 'cal-day';
       if (total > 0) cell.classList.add('has-swings');
@@ -547,12 +882,45 @@
       cell.textContent = day;
       if (total > 0) {
         cell.addEventListener('click', () => {
-          document.getElementById('dayInfo').textContent =
-            `${cellDate.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}: ${total} swings`;
+          dayInfoEl.textContent = formatDayInfo(cellDate, key);
         });
       }
-      grid.appendChild(cell);
+      gridEl.appendChild(cell);
     }
+  }
+
+  function renderCalendar() {
+    buildCalendarGrid({
+      gridEl: document.getElementById('calGrid'),
+      monthLabelEl: document.getElementById('monthLabel'),
+      viewMonth, viewYear,
+      dayInfoEl: document.getElementById('dayInfo'),
+      dayTotalFn: dayTotal,
+      formatDayInfo: (cellDate, key) =>
+        `${cellDate.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}: ${dayTotal(key)} swings`
+    });
+  }
+
+  function renderSSCalendar() {
+    buildCalendarGrid({
+      gridEl: document.getElementById('ssCalGrid'),
+      monthLabelEl: document.getElementById('ssMonthLabel'),
+      viewMonth: ssViewMonth, viewYear: ssViewYear,
+      dayInfoEl: document.getElementById('ssDayInfo'),
+      dayTotalFn: (key) => {
+        const tgu = ssTguDayCount(key);
+        return ssDayTotal(key) + tgu.left + tgu.right;
+      },
+      formatDayInfo: (cellDate, key) => {
+        const swingCounts = ssSwingDayCounts(key);
+        const swings = ssDayTotal(key);
+        const tgu = ssTguDayCount(key);
+        const parts = [];
+        if (swings) parts.push(`${swings} swings (L:${swingCounts.L} R:${swingCounts.R} 2H:${swingCounts['2H']})`);
+        if (tgu.left || tgu.right) parts.push(`TGU L:${tgu.left} R:${tgu.right}`);
+        return `${cellDate.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}: ${parts.join(', ')}`;
+      }
+    });
   }
 
   function renderPastCycles() {
@@ -581,6 +949,10 @@
     renderChecklist();
     renderCalendar();
     renderPastCycles();
+    renderSSStats();
+    renderSSSwings();
+    renderSSTgu();
+    renderSSCalendar();
   }
 
   document.getElementById('prevMonth').addEventListener('click', () => {
@@ -595,6 +967,49 @@
   });
   document.getElementById('startNewBtn').addEventListener('click', startNewChallenge);
   document.getElementById('finishDayBtn').addEventListener('click', finishDay);
+
+  document.getElementById('ssPrevMonth').addEventListener('click', () => {
+    ssViewMonth--;
+    if (ssViewMonth < 0) { ssViewMonth = 11; ssViewYear--; }
+    renderSSCalendar();
+  });
+  document.getElementById('ssNextMonth').addEventListener('click', () => {
+    ssViewMonth++;
+    if (ssViewMonth > 11) { ssViewMonth = 0; ssViewYear++; }
+    renderSSCalendar();
+  });
+  document.getElementById('ssSwingLeftAdd').addEventListener('click', () => ssAddSwingPending('L'));
+  document.getElementById('ssSwingRightAdd').addEventListener('click', () => ssAddSwingPending('R'));
+  document.getElementById('ssSwing2HAdd').addEventListener('click', () => ssAddSwingPending('2H'));
+  document.getElementById('ssSwingLeftMinus').addEventListener('click', () => ssRemoveLastSwing('L'));
+  document.getElementById('ssSwingRightMinus').addEventListener('click', () => ssRemoveLastSwing('R'));
+  document.getElementById('ssSwing2HMinus').addEventListener('click', () => ssRemoveLastSwing('2H'));
+  document.getElementById('ssTguLeftAdd').addEventListener('click', () => ssAddTguPending('left'));
+  document.getElementById('ssTguRightAdd').addEventListener('click', () => ssAddTguPending('right'));
+  document.getElementById('ssTguLeftMinus').addEventListener('click', () => ssRemoveLastTgu('left'));
+  document.getElementById('ssTguRightMinus').addEventListener('click', () => ssRemoveLastTgu('right'));
+  document.getElementById('ssFinishDayBtn').addEventListener('click', ssFinishDay);
+  document.getElementById('ssResetTodayBtn').addEventListener('click', ssResetToday);
+
+  function setActiveTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.tab === tab);
+    });
+    document.getElementById('tab-ss').classList.toggle('active', tab === 'ss');
+    document.getElementById('tab-challenge').classList.toggle('active', tab === 'challenge');
+    try { localStorage.setItem(TAB_KEY, tab); } catch (e) {}
+  }
+
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => setActiveTab(btn.dataset.tab));
+  });
+
+  let initialTab = 'ss';
+  try {
+    const savedTab = localStorage.getItem(TAB_KEY);
+    if (savedTab === 'ss' || savedTab === 'challenge') initialTab = savedTab;
+  } catch (e) {}
+  setActiveTab(initialTab);
 
   renderButtons();
   renderAll();
